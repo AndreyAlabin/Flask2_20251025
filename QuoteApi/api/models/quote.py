@@ -1,7 +1,6 @@
 from api import db
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, ForeignKey
-# from api.models.author import AuthorModel
 
 
 class QuoteModel(db.Model):
@@ -20,11 +19,3 @@ class QuoteModel(db.Model):
 
     def __repr__(self):
         return f'Quote{self.id, self.author}'  
-    
-    # def to_dict(self):
-    #     return {
-    #         "quote_id": self.id,
-    #         "author": f'id {self.author.id}: {self.author.name} {self.author.surname}',
-    #         "text": self.text,
-    #         "rating": self.rating
-    #     }

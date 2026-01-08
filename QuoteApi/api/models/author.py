@@ -15,6 +15,3 @@ class AuthorModel(db.Model):
     def __init__(self, name, surname="-"):
         self.name = name
         self.surname = surname
-
-    # def to_dict(self):
-    #     return {"id": self.id, "name": self.name, "surname": self.surname}

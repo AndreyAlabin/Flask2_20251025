@@ -1,5 +1,3 @@
-from functools import partial
-
 from api import ma
 from api.models.author import AuthorModel
 from marshmallow.validate import Length

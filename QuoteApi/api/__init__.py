@@ -19,3 +19,4 @@ ma.init_app(app)
 
 from api.handlers import author
 from api.handlers import quote
+from api.handlers import user
