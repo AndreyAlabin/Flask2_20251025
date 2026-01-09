@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from api import db, app, auth
+from api import db, app, multi_auth
 from flask import jsonify, abort, request
 from api.models.quote import QuoteModel
 from api.models.author import AuthorModel
@@ -23,6 +23,7 @@ def get_quote_by_id(quote_id: int):
 
 
 @app.delete("/quotes/<int:quote_id>")
+@multi_auth.login_required
 def delete_quote(quote_id):
     """Delete Quote by ID + """
     quote = db.get_or_404(entity=QuoteModel, ident=quote_id, description=f"Quote with id={quote_id} not found")
@@ -36,9 +37,11 @@ def delete_quote(quote_id):
 
 
 @app.post("/authors/<int:author_id>/quotes")
-@auth.login_required
+@multi_auth.login_required
 def create_quote(author_id: int):
     """Create new Quote by Author ID + """
+    # print(f'user = {multi_auth.current_user()}')
+    # print(request.headers.get('Authorization'))
     author = db.get_or_404(AuthorModel, author_id, description=f"Author with id={author_id} not found")
     try:
         quote_db = quote_schema.loads(request.data)
@@ -61,6 +64,7 @@ def get_quote_by_author_id(author_id: int):
 
 
 @app.put("/quotes/<int:quote_id>")
+@multi_auth.login_required
 def edit_quote(quote_id: int):
     """Edit Quote by ID + """
     try:

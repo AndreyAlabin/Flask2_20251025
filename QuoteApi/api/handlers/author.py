@@ -1,4 +1,4 @@
-from api import db, app
+from api import db, app, token_auth
 from flask import request, abort, jsonify
 from http import HTTPStatus
 from api.models.author import AuthorModel
@@ -23,6 +23,7 @@ def author_quotes(author_id: int):
 
 
 @app.post("/authors")
+@token_auth.login_required
 def create_author():
     """Create new Author + """
     try:
@@ -39,6 +40,7 @@ def create_author():
 
 
 @app.delete("/authors/<int:author_id>")
+@token_auth.login_required
 def delete_author(author_id):
     """Delete Author by ID + """
     author = db.get_or_404(entity=AuthorModel, ident=author_id, description=f"Author with id={author_id} not found")
@@ -52,6 +54,7 @@ def delete_author(author_id):
 
 
 @app.put("/authors/<int:author_id>")
+@token_auth.login_required
 def edit_author(author_id: int):
     """Edit Author by ID + """
     try:
