@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from api import db, app
+from api import db, app, auth
 from flask import jsonify, abort, request
 from api.models.quote import QuoteModel
 from api.models.author import AuthorModel
@@ -36,6 +36,7 @@ def delete_quote(quote_id):
 
 
 @app.post("/authors/<int:author_id>/quotes")
+@auth.login_required
 def create_quote(author_id: int):
     """Create new Quote by Author ID + """
     author = db.get_or_404(AuthorModel, author_id, description=f"Author with id={author_id} not found")
