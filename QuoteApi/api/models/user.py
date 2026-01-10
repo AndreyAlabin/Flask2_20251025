@@ -6,7 +6,9 @@ import sqlalchemy as sa
 from api import db
 from config import Config
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
-from itsdangerous import URLSafeSerializer, BadSignature
+# from itsdangerous import URLSafeSerializer, BadSignature
+import jwt
+from time import time
 
 
 class UserModel(db.Model):
@@ -44,16 +46,23 @@ class UserModel(db.Model):
             abort(HTTPStatus.SERVICE_UNAVAILABLE, f'{str(e)}')
 
     def generate_auth_token(self):
-        s = URLSafeSerializer(Config.SECRET_KEY)
-        return s.dumps({'id': self.id})
+        # s = URLSafeSerializer(Config.SECRET_KEY)
+        # return s.dumps({'id': self.id})
+        token = jwt.encode({"id": self.id, "exp": int(time()) + 600}, Config.SECRET_KEY, algorithm="HS256")
+        return token
+
 
     @staticmethod
     def verify_auth_token(token):
-        s = URLSafeSerializer(Config.SECRET_KEY)
+        # s = URLSafeSerializer(Config.SECRET_KEY)
+        # print(f'{token = }')
         try:
-            data = s.loads(token)
-        except BadSignature as bde:
-            print(f'{bde = }')
+            # data = s.loads(token)
+            data = jwt.decode(token, Config.SECRET_KEY, algorithms=["HS256"])
+        # except BadSignature as bde:
+        except Exception as e:
+            # print(f'{bde = }')
+            # print(f'{str(e) = }')
             return None  # invalid token
         user = db.get_or_404(UserModel, data['id'], description=f'User with id {data["id"]} does not found')
         return user
